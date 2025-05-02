@@ -1,0 +1,51 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Windows
+*.bat
+*.cmd
+
+# Others
+*.swp
+*.swo
+
+# Sensitive
+application.properties
+
+# Node/npm (por si hay frontend en el repo)
+node_modules/
+
+# Jupyter Notebooks
+*.ipynb_checkpoints/
+
+# OneDrive/Office
+~$*
+*.tmp
