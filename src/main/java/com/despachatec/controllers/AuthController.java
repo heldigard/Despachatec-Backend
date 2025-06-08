@@ -49,51 +49,59 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<JwtAuthResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+      // Autentica al usuario usando el nombre de usuario o email y la contraseña
+      // proporcionados
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
             loginRequest.getUsernameOrEmail(),
             loginRequest.getPassword()));
 
+    // Si la autenticación es exitosa, se establece en el contexto de seguridad
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    // Obtener token
+    // Genera un token JWT para el usuario autenticado
     String token = tokenProvider.generateToken(authentication);
 
-    // Obtener detalles del usuario para la respuesta
+    // Obtiene el nombre de usuario (username o email) autenticado
     String username = authentication.getName();
+    // Busca el usuario en la base de datos para obtener información adicional
     Usuario usuario = usuarioRepository.findByUsernameOrEmail(username, username)
         .orElseThrow();
 
+    // Devuelve la respuesta con el token y los datos del usuario
     return ResponseEntity.ok(new JwtAuthResponse(token, usuario.getUsername(), usuario.getNombre(), usuario.getId()));
   }
 
   @PostMapping("/register")
-  public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
-    // Comprobar si ya existe un usuario con ese username
-    if (usuarioRepository.existsByUsername(registerRequest.getUsername())) {
-      return new ResponseEntity<>("El nombre de usuario ya está en uso", HttpStatus.BAD_REQUEST);
+  public ResponseEntity<Map<String, Object>> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+      // Verifica si el nombre de usuario ya está en uso
+      if (Boolean.TRUE.equals(usuarioRepository.existsByUsername(registerRequest.getUsername()))) {
+          Map<String, Object> error = new HashMap<>();
+          error.put("mensaje", "El nombre de usuario ya está en uso");
+          return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // Comprobar si ya existe un usuario con ese email
-    if (usuarioRepository.existsByEmail(registerRequest.getEmail())) {
-      return new ResponseEntity<>("El email ya está en uso", HttpStatus.BAD_REQUEST);
+    // Verifica si el email ya está en uso
+    if (Boolean.TRUE.equals(usuarioRepository.existsByEmail(registerRequest.getEmail()))) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("mensaje", "El email ya está en uso");
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // Crear nuevo usuario
+    // Crea un nuevo usuario con los datos proporcionados
     Usuario usuario = new Usuario();
     usuario.setNombre(registerRequest.getNombre());
     usuario.setUsername(registerRequest.getUsername());
     usuario.setEmail(registerRequest.getEmail());
     usuario.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
-    // Asignar rol de usuario por defecto
+    // Asigna el rol USER por defecto
     Rol roles = rolRepository.findByNombre("USER")
         .orElseGet(() -> {
           Rol userRol = new Rol();
           userRol.setNombre("USER");
           return rolRepository.save(userRol);
-        });
-
+            });
     usuario.setRoles(Collections.singleton(roles));
     usuarioRepository.save(usuario);
 
