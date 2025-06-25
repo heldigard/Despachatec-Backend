@@ -54,7 +54,7 @@ out/
 .log
 
 ### VS Code ###
-.vscode/
+# .vscode/
 
 # Package files
 *.jar
@@ -98,4 +98,4 @@ src/main/resources/application.yml
 
 # Vscode
 .github/
-.vscode/
+memory-bank

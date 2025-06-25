@@ -1,0 +1,24 @@
+{
+  // 💡 Inputs are prompted on first server start, then stored securely by VS Code.
+  // "inputs": [
+  //   {
+  // 	"type": "promptString",
+  // 	"id": "perplexity-key",
+  // 	"description": "Perplexity API Key",
+  // 	"password": true
+  //   }
+  // ],
+  "servers": {
+    "dbhub-npx": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@bytebase/dbhub",
+        "--transport",
+        "stdio",
+        "--dsn",
+        "mysql://root:root@localhost:3306/despachatec?sslmode=disable"
+      ]
+    }
+  }
+}
