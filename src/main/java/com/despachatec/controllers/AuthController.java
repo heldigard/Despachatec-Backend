@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,5 +111,12 @@ public class AuthController {
     response.put("usuario", usuario);
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<?> logout(HttpServletRequest request) {
+      // No hay sesión que invalidar en JWT, pero se puede auditar o registrar el
+      // logout si se desea
+      return ResponseEntity.ok().body(Collections.singletonMap("mensaje", "Logout exitoso"));
   }
 }
