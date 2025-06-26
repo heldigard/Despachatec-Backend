@@ -137,6 +137,27 @@ Content-Type: application/json
 
 ---
 
+### POST `/api/auth/logout`
+**Descripción:** Finaliza la sesión del usuario. El backend responde para que el frontend elimine el JWT del almacenamiento local.
+
+**Headers:**
+```
+Authorization: Bearer <jwt-token>
+```
+
+**Response 200 - Logout exitoso:**
+```json
+{
+  "mensaje": "Logout exitoso"
+}
+```
+
+**Notas:**
+- El backend no puede invalidar el JWT, pero este endpoint permite al frontend realizar el proceso de cierre de sesión de forma estándar y auditable.
+- El frontend debe eliminar el token JWT del almacenamiento local al recibir una respuesta exitosa.
+
+---
+
 ## 2. Gestión de Clientes (`/api/clientes`)
 
 ### GET `/api/clientes`
