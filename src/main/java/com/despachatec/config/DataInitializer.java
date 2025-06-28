@@ -60,20 +60,20 @@ public class DataInitializer implements CommandLineRunner {
     private void initializeRoles() {
         // Crear roles básicos
         Rol adminRole = new Rol();
-        adminRole.setNombre("ADMIN");
+        adminRole.setNombre("ROLE_ADMIN");
         rolRepository.save(adminRole);
 
         Rol userRole = new Rol();
-        userRole.setNombre("USER");
+        userRole.setNombre("ROLE_USER");
         rolRepository.save(userRole);
 
-        log.info("✓ Roles básicos inicializados: ADMIN, USER");
+        log.info("✓ Roles básicos inicializados: ROLE_ADMIN, ROLE_USER");
     }
 
     private void initializeAdminUser() {
         // Crear usuario administrador por defecto
-        Rol adminRole = rolRepository.findByNombre("ADMIN")
-                .orElseThrow(() -> new RuntimeException("Rol ADMIN no encontrado"));
+        Rol adminRole = rolRepository.findByNombre("ROLE_ADMIN")
+                .orElseThrow(() -> new RuntimeException("Rol ROLE_ADMIN no encontrado"));
 
         Usuario admin = new Usuario();
         admin.setNombre(adminName);
@@ -91,7 +91,7 @@ public class DataInitializer implements CommandLineRunner {
         log.info("  Username: {}", adminUsername);
         log.info("  Email: {}", adminEmail);
         log.info("  Nombre: {}", adminName);
-        log.info("  Rol: ADMIN");
+        log.info("  Rol: ROLE_ADMIN");
         log.warn("⚠️  IMPORTANTE: Cambiar las credenciales por defecto en producción");
     }
 }

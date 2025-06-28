@@ -1,9 +1,11 @@
 package com.despachatec.security;
 
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -29,8 +31,14 @@ public class JwtTokenProvider {
     Date currentDate = new Date();
     Date expireDate = new Date(currentDate.getTime() + jwtExpirationInMs);
 
+    // Obtener roles del usuario autenticado
+    String roles = authentication.getAuthorities().stream()
+        .map(GrantedAuthority::getAuthority)
+        .collect(Collectors.joining(","));
+
     return Jwts.builder()
         .setSubject(username)
+        .claim("roles", roles)
         .setIssuedAt(currentDate)
         .setExpiration(expireDate)
         .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -44,6 +52,15 @@ public class JwtTokenProvider {
         .parseClaimsJws(token)
         .getBody();
     return claims.getSubject();
+  }
+
+  // Obtener roles del token JWT
+  public String getRolesFromJWT(String token) {
+    Claims claims = Jwts.parser()
+        .setSigningKey(jwtSecret)
+        .parseClaimsJws(token)
+        .getBody();
+    return claims.get("roles", String.class);
   }
 
   // Validar token JWT

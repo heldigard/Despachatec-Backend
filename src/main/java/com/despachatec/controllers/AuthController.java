@@ -105,10 +105,10 @@ public class AuthController {
     usuario.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
     // Asigna el rol USER por defecto
-    Rol roles = rolRepository.findByNombre("USER")
+    Rol roles = rolRepository.findByNombre("ROLE_USER")
         .orElseGet(() -> {
           Rol userRol = new Rol();
-          userRol.setNombre("USER");
+          userRol.setNombre("ROLE_USER");
           return rolRepository.save(userRol);
             });
     usuario.setRoles(Collections.singleton(roles));

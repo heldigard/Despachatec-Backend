@@ -14,9 +14,14 @@ La mayoría de los endpoints requieren autenticación JWT. Para endpoints proteg
 Authorization: Bearer <jwt-token>
 ```
 
+**Importante:** Los tokens JWT incluyen información de roles del usuario, por lo que **es necesario hacer login nuevamente** después de actualizaciones del sistema para obtener un token con la estructura correcta.
+
 ### Roles de Usuario
 - **ADMIN**: Acceso completo a todas las operaciones CRUD
 - **USER**: Acceso de solo lectura a la mayoría de recursos
+
+### Estructura del Token JWT
+Los tokens JWT ahora incluyen los roles del usuario en el payload, eliminando la necesidad de consultar la base de datos en cada request. Esto mejora significativamente el rendimiento del sistema.
 
 ### Formato de Respuesta Estándar
 Las respuestas siguen un formato consistente:
@@ -61,14 +66,16 @@ Content-Type: application/json
 **Response 200 - Autenticación exitosa:**
 ```json
 {
-  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBkZXNwYWNoYXRlYy5jb20iLCJyb2xlcyI6IlJPTEVfQURNSU4iLCJpYXQiOjE3NTExNDg0NTIsImV4cCI6MTc1MTc1MzI1Mn0...",
   "tokenType": "Bearer",
-  "username": "juanperez",
-  "nombre": "Juan Pérez",
+  "username": "admin",
+  "nombre": "Administrador",
   "id": 1,
   "roles": ["ADMIN"]
 }
 ```
+
+**Nota:** El token JWT ahora incluye los roles del usuario en el payload (claim "roles"), lo que permite validación de permisos sin consultar la base de datos en cada request.
 
 **Response 401 - Credenciales inválidas:**
 ```json
@@ -762,7 +769,9 @@ Authorization: Bearer <jwt-token>
 ### 1. Autenticación
 1. Usuario hace login con `POST /api/auth/login`
 2. Guardar token JWT en localStorage/sessionStorage
-3. Incluir token en header Authorization de todas las requests
+3. **Importante:** El token JWT contiene los roles del usuario, asegurando autorización eficiente
+4. Incluir token en header Authorization de todas las requests
+5. **Nota:** Después de actualizaciones del sistema, es necesario hacer login nuevamente para obtener tokens con la estructura actualizada
 
 ### 2. Gestión de Datos
 1. **Clientes**: CRUD completo para ADMIN, solo lectura para USER
@@ -776,6 +785,7 @@ Authorization: Bearer <jwt-token>
 - Para endpoints con formato estándar, verificar `success: true/false`
 - Mostrar mensajes de error apropiados al usuario
 - Manejar tokens expirados (401) redirigiendo al login
+- **Nuevo:** Si hay error 403 (Forbidden) después de login exitoso, hacer logout y login nuevamente para obtener token actualizado
 
 ### 4. Estados de Carga
 - Mostrar indicadores durante requests HTTP
@@ -787,14 +797,18 @@ Authorization: Bearer <jwt-token>
 ## Notas Adicionales
 
 ### Seguridad
-- JWT tokens tienen expiración
-- Endpoints protegidos validan roles automáticamente
+- JWT tokens tienen expiración configurada
+- JWT tokens incluyen roles del usuario para autorización stateless
+- Endpoints protegidos validan roles automáticamente desde el token
 - Validaciones de entrada en todos los endpoints
+- **Recomendación:** Implementar refresh de tokens cuando estén próximos a expirar
 
 ### Rendimiento
+- JWT tokens con roles embebidos eliminan consultas de base de datos para autorización
 - Endpoints de listado pueden retornar grandes volúmenes
 - Considerar paginación para listas extensas
 - Cache local para datos que cambian poco
+- **Mejora:** Validación de roles ahora es O(1) en lugar de consulta DB
 
 ### Mantenimiento
 - Documentación sincronizada con implementación
@@ -803,6 +817,24 @@ Authorization: Bearer <jwt-token>
 
 ---
 
-**Documento generado:** 2025-06-21
-**Versión:** 1.1
-**Estado:** Revisado y corregido tras validación exhaustiva
+## Changelog
+
+### v1.2 (2025-06-28)
+**Mejoras en Sistema de Autenticación JWT:**
+- ✅ Los tokens JWT ahora incluyen roles del usuario en el payload
+- ✅ Eliminadas consultas a base de datos para validación de roles en cada request
+- ✅ Mejor rendimiento: autorización ahora es O(1)
+- ✅ Mantiene compatibilidad con estructura de respuesta existente
+- ⚠️ **Acción requerida:** Usuarios deben hacer login nuevamente para obtener tokens actualizados
+
+### v1.1 (2025-06-21)
+- Documentación revisada y corregida tras validación exhaustiva
+- Formatos de request/response validados
+- Ejemplos actualizados
+
+---
+
+**Documento generado:** 2025-06-28  
+**Versión:** 1.2  
+**Estado:** Actualizado con mejoras en sistema de autenticación JWT  
+**Cambios principales:** Tokens JWT ahora incluyen roles para mejor rendimiento y seguridad

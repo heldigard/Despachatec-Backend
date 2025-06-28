@@ -6,8 +6,8 @@
 
 -- Verificar que existan las tablas necesarias
 -- Si no existen roles básicos, crearlos primero
-INSERT IGNORE INTO roles (nombre) VALUES ('ADMIN');
-INSERT IGNORE INTO roles (nombre) VALUES ('USER');
+INSERT IGNORE INTO roles (nombre) VALUES ('ROLE_ADMIN');
+INSERT IGNORE INTO roles (nombre) VALUES ('ROLE_USER');
 
 -- Verificar usuario admin existe
 
