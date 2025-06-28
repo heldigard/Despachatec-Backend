@@ -112,3 +112,41 @@ This project serves as the backend for the Despachatec restaurant management sys
 
 ## License
 This project is proprietary. Contact the author for licensing information.
+
+## Datos Iniciales
+
+### Inicialización Automática
+Al iniciar la aplicación por primera vez, se crearán automáticamente:
+- Roles básicos: ADMIN, USER
+- Usuario administrador:
+  - Username: `admin`
+  - Email: `admin@despachatec.com` 
+  - Password: `admin123`
+  - Rol: ADMIN
+
+### Datos de Prueba (Opcional)
+Para agregar datos de ejemplo para desarrollo/testing:
+```sql
+-- Ejecutar manualmente en la base de datos
+source src/main/resources/sample-data.sql;
+```
+
+## Estructura del Proyecto
+
+```
+src/
+├── main/
+│   ├── java/
+│   │   └── com/
+│   │       └── despachatec/
+│   │           ├── controller/      # Controladores REST
+│   │           ├── model/           # Modelos JPA
+│   │           ├── repository/      # Repositorios Spring Data
+│   │           ├── security/        # Configuración de seguridad
+│   │           ├── service/         # Lógica de negocio
+│   │           └── DespachatecBackendApplication.java
+│   └── resources/
+│       ├── sample-data.sql    # Datos de ejemplo (ejecutar manualmente)
+│       ├── cleanup-data.sql   # Script de limpieza de datos
+│       └── application.properties
+```
