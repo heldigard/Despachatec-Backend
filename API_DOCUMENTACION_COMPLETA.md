@@ -414,7 +414,27 @@ Authorization: Bearer <jwt-token>
 ### GET `/api/productos/search?query=...`
 **Descripción:** Busca productos por nombre.
 
+**Autorización:** No requerida
+
 **Response 200:** Array de productos que coinciden
+
+---
+
+### GET `/api/productos/categorias`
+**Descripción:** Lista todas las categorías de productos disponibles (solo productos activos).
+
+**Autorización:** No requerida
+
+**Response 200:**
+```json
+[
+  "Pizzas",
+  "Bebidas", 
+  "Postres",
+  "Ensaladas",
+  "Pastas"
+]
+```
 
 ---
 

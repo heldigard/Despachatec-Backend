@@ -62,6 +62,11 @@ public class ProductoController {
         .collect(Collectors.toList());
   }
 
+  @GetMapping("/categorias")
+  public List<String> getCategorias() {
+    return productoRepository.findDistinctCategorias();
+  }
+
   @PostMapping
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<ProductoDTO> createProducto(@Valid @RequestBody ProductoDTO productoDTO) {
