@@ -3,6 +3,8 @@ package com.despachatec.controllers;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -69,8 +71,14 @@ public class AuthController {
     Usuario usuario = usuarioRepository.findByUsernameOrEmail(username, username)
         .orElseThrow();
 
-    // Devuelve la respuesta con el token y los datos del usuario
-    return ResponseEntity.ok(new JwtAuthResponse(token, usuario.getUsername(), usuario.getNombre(), usuario.getId()));
+    // Extrae los nombres de los roles del usuario
+    Set<String> roles = usuario.getRoles().stream()
+            .map(Rol::getNombre)
+            .collect(Collectors.toSet());
+
+    // Devuelve la respuesta con el token y los datos del usuario incluyendo roles
+    return ResponseEntity
+            .ok(new JwtAuthResponse(token, usuario.getUsername(), usuario.getNombre(), usuario.getId(), roles));
   }
 
   @PostMapping("/register")

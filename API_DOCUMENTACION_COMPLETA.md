@@ -65,7 +65,8 @@ Content-Type: application/json
   "tokenType": "Bearer",
   "username": "juanperez",
   "nombre": "Juan Pérez",
-  "id": 1
+  "id": 1,
+  "roles": ["ADMIN"]
 }
 ```
 
